@@ -2,7 +2,7 @@ import React, {useState,useEffect} from 'react';
 import  Header from '../Header/Header';
 import  Footer from '../Footer/Footer';
 import  SubHeader from '../Header/SubHeader';
-
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 const titleName='Popular Movies'
 
 function Movies(props) {
@@ -34,7 +34,7 @@ function Movies(props) {
 
                 chunk = newarray.slice(0, 21);
                 // console.log(chunk.length)
-                setData(chunk)
+                setData(newarray)
                 
               }).catch(error=>setHasError(true));
          } catch (error) {
@@ -52,16 +52,35 @@ function Movies(props) {
   let finalArr = [], columns = []
     chunkFunction(data,7).map((e,i)=>{
                  e.map((dataresult,index)=>{
-                      console.log(dataresult)
-                      columns.push(
+                      if(i>2){
+
+                         columns.push(
                               <div id={index} className="customcol">
                                 <div className="card bg-dark text-white">
-                                   <img src={dataresult.images['Poster Art'].url} className="card-img" alt="..." />
+                                     <LazyLoadImage
+                                        alt={dataresult.images['Poster Art'].url}
+                                       
+                                        src={dataresult.images['Poster Art'].url}
+                                        effect="blur"  // use normal <img> attributes as props
+                                         />
+
                                  </div>
                                  <div className="pt-2"><a >{dataresult.title}</a></div>
                               </div>
 
                       )
+                      }
+                       columns.push(
+                              <div id={index} className="customcol">
+                                <div className="card bg-dark text-white">
+                                   <img src={dataresult.images['Poster Art'].url} className="card-img" alt="..." />
+
+                                 </div>
+                                 <div className="pt-2"><a >{dataresult.title}</a></div>
+                              </div>
+
+                      )
+                     
                   })
               finalArr.push(<div className ="row">
                          {columns}
